@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoCare AI - NCSC Science Project</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(20, 184, 166, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(20, 184, 166, 0.5); }
+        }
+        .animate-pulse-glow { animation: pulseGlow 3s infinite; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-200 dark:border-slate-800 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center text-white text-xl shadow-lg shadow-brand-500/30 animate-pulse-glow">
+                    🧬
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-teal-600 to-emerald-600 dark:from-teal-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                        OncoCare AI
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+                        NCSC Science Project | By Guntas Kaur (Class VIII-12)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center space-x-6 text-sm font-semibold">
+                <a href="#overview" class="hover:text-brand-600 dark:hover:text-teal-400 transition">Overview</a>
+                <a href="#calculator" class="hover:text-brand-600 dark:hover:text-teal-400 transition">AI App Prototype</a>
+                <a href="#physical-model" class="hover:text-brand-600 dark:hover:text-teal-400 transition">Physical Model</a>
+                <a href="#modalities" class="hover:text-brand-600 dark:hover:text-teal-400 transition">Screening Modalities</a>
+                <a href="#survey" class="hover:text-brand-600 dark:hover:text-teal-400 transition">Survey Insights</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="flex items-center space-x-3">
+                <!-- Theme Toggle -->
+                <button id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-4 space-y-3 font-medium text-sm">
+            <a href="#overview" onclick="toggleMobileMenu()" class="block py-1 hover:text-brand-600">Overview</a>
+            <a href="#calculator" onclick="toggleMobileMenu()" class="block py-1 hover:text-brand-600">AI App Prototype</a>
+            <a href="#physical-model" onclick="toggleMobileMenu()" class="block py-1 hover:text-brand-600">Physical Model</a>
+            <a href="#modalities" onclick="toggleMobileMenu()" class="block py-1 hover:text-brand-600">Screening Modalities</a>
+            <a href="#survey" onclick="toggleMobileMenu()" class="block py-1 hover:text-brand-600">Survey Insights</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- SECTION 1: HERO & OVERVIEW -->
+        <section id="overview" class="pt-4 scroll-mt-28">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-teal-900 to-slate-900 text-white p-8 sm:p-12 shadow-2xl">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wider text-teal-300 uppercase">
+                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                            <span>National Children's Science Congress (NCSC) Project</span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                            AI-Based Cancer Risk Prediction, Early Awareness & Prevention System
+                        </h1>
+
+                        <blockquote class="text-lg sm:text-xl font-medium text-teal-100/90 border-l-4 border-teal-400 pl-4 italic">
+                            “Assess Risk. Prevent Early. Act in Time.”
+                        </blockquote>
+
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                            OncoCare AI is an innovative healthcare technology concept bridging digital AI risk-pattern modeling, a physical health kiosk station architecture, and community survey analysis to convert cancer health knowledge into early-action habits.
+                        </p>
+
+                        <!-- Key Details Pills -->
+                        <div class="flex flex-wrap gap-3 pt-2 text-xs font-semibold text-teal-200">
+                            <span class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/10"><i class="fa-solid fa-user-graduate mr-1.5"></i> Student: Guntas Kaur</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/10"><i class="fa-solid fa-chalkboard-user mr-1.5"></i> Class: VIII (Roll No. 12)</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/10"><i class="fa-solid fa-microscope mr-1.5"></i> Focus: Risk Awareness & Prevention</span>
+                        </div>
+
+                        <div class="pt-4 flex flex-wrap gap-4">
+                            <a href="#calculator" class="px-6 py-3.5 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-900 font-bold text-sm transition shadow-lg shadow-teal-400/20 flex items-center space-x-2">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>Try Interactive AI App Prototype</span>
+                            </a>
+                            <a href="#physical-model" class="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition flex items-center space-x-2">
+                                <i class="fa-solid fa-hospital-user"></i>
+                                <span>Explore Kiosk Pathway</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual Card -->
+                    <div class="lg:col-span-4 flex justify-center">
+                        <div class="w-full max-w-xs p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center animate-float space-y-4">
+                            <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-4xl shadow-xl">
+                                🛡️
+                            </div>
+                            <h3 class="font-bold text-lg text-white">Core Philosophy</h3>
+                            <div class="space-y-2 text-xs text-slate-200 text-left">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-teal-400 font-bold">✓</span>
+                                    <span>Identifies risk factor combinations</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-teal-400 font-bold">✓</span>
+                                    <span>Encourages lifestyle modification</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-teal-400 font-bold">✓</span>
+                                    <span>Promotes screening awareness</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-rose-400 font-bold">✕</span>
+                                    <span class="text-slate-300">Does not diagnose cancer clinical state</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: INTERACTIVE AI APP PROTOTYPE -->
+        <section id="calculator" class="scroll-mt-28 space-y-6">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">Digital Component</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">OncoCare AI App Risk Simulator</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm">
+                    Simulate how the OncoCare AI mobile application evaluates lifestyle inputs, flags multi-factor risk combinations, and outputs preventive guidance.
+                </p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+                <!-- Questionnaire Form Screen -->
+                <div id="appFormScreen" class="p-6 sm:p-10 space-y-8">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-brand-500"></span>
+                            <h3 class="font-bold text-lg">Step 1: User Profile & Lifestyle Questionnaire</h3>
+                        </div>
+                        <span class="text-xs text-slate-500 font-medium">8 Key Metrics</span>
+                    </div>
+
+                    <form id="riskCalculatorForm" onsubmit="calculateRisk(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Age Group -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">1. Age Bracket</label>
+                            <select id="qAge" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">Under 30 years</option>
+                                <option value="1">30 - 45 years</option>
+                                <option value="2">46 - 60 years</option>
+                                <option value="3">Above 60 years</option>
+                            </select>
+                        </div>
+
+                        <!-- Tobacco Usage -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">2. Tobacco / Smoking Exposure</label>
+                            <select id="qTobacco" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">None / Non-smoker</option>
+                                <option value="2">Occasional / Passive exposure</option>
+                                <option value="4">Regular smoking or chewing tobacco</option>
+                            </select>
+                        </div>
+
+                        <!-- Alcohol Consumption -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">3. Alcohol Consumption</label>
+                            <select id="qAlcohol" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">None or Rare</option>
+                                <option value="1">Moderate</option>
+                                <option value="3">Heavy / Frequent</option>
+                            </select>
+                        </div>
+
+                        <!-- Physical Activity -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">4. Physical Activity Level</label>
+                            <select id="qExercise" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">Active (150+ mins exercise/week)</option>
+                                <option value="1">Moderate (Occasional walks/sports)</option>
+                                <option value="3">Sedentary (Low or no regular exercise)</option>
+                            </select>
+                        </div>
+
+                        <!-- Dietary Habits -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">5. Diet Quality</label>
+                            <select id="qDiet" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">Balanced (High fruits, veggies, whole grains)</option>
+                                <option value="1">Average diet</option>
+                                <option value="2">High processed, red meat, low fiber</option>
+                            </select>
+                        </div>
+
+                        <!-- Sun / UV Exposure -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">6. Sun / UV Radiation Exposure</label>
+                            <select id="qSun" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">Protected / Minimal outdoor peak exposure</option>
+                                <option value="1">Moderate outdoor exposure</option>
+                                <option value="2">High unprotected sun exposure</option>
+                            </select>
+                        </div>
+
+                        <!-- Family History -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">7. Family History of Cancer</label>
+                            <select id="qFamily" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">No known close relatives</option>
+                                <option value="2">Distant relative (e.g. aunt/cousin)</option>
+                                <option value="4">First-degree relative (parent/sibling)</option>
+                            </select>
+                        </div>
+
+                        <!-- Warning Signs -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">8. Persistent Symptoms / Warning Signs</label>
+                            <select id="qSymptoms" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition">
+                                <option value="0">None</option>
+                                <option value="2">Mild recurring fatigue / minor weight change</option>
+                                <option value="5">Unexplained weight loss, persistent lump, or sores</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-2 pt-4">
+                            <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-600 to-teal-600 hover:from-brand-700 hover:to-teal-700 text-white font-bold text-base shadow-lg shadow-brand-500/25 transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-microchip"></i>
+                                <span>Run AI Risk Assessment</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- AI Processing Loader Screen -->
+                <div id="appProcessingScreen" class="hidden p-12 text-center space-y-6">
+                    <div class="w-20 h-20 mx-auto rounded-full border-4 border-slate-200 border-t-brand-500 animate-spin flex items-center justify-center">
+                        <i class="fa-solid fa-brain text-brand-600 text-2xl animate-pulse"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold">Evaluating Multi-Factor Risk Combinations...</h3>
+                        <p id="processingStepText" class="text-sm text-slate-500 dark:text-slate-400">Analyzing tobacco + exercise + genetic history patterns...</p>
+                    </div>
+                    <div class="max-w-md mx-auto bg-slate-200 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div id="processingBar" class="bg-gradient-to-r from-brand-500 to-teal-400 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- AI Result Dashboard Screen -->
+                <div id="appResultScreen" class="hidden p-6 sm:p-10 space-y-8">
+                    <!-- Dashboard Header -->
+                    <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-6 gap-4">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">OncoCare AI Report</span>
+                            <h3 class="text-2xl font-extrabold">Risk Assessment Results</h3>
+                        </div>
+                        <div id="riskBadge" class="px-5 py-2 rounded-2xl text-sm font-extrabold flex items-center space-x-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Main Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Key Risk Drivers -->
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 space-y-3">
+                            <h4 class="font-bold text-sm flex items-center space-x-2 text-slate-700 dark:text-slate-200">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                                <span>Key Contributing Factors</span>
+                            </h4>
+                            <ul id="riskFactorsList" class="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                                <!-- Injected dynamically -->
+                            </ul>
+                        </div>
+
+                        <!-- Prevention Plan -->
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 space-y-3">
+                            <h4 class="font-bold text-sm flex items-center space-x-2 text-slate-700 dark:text-slate-200">
+                                <i class="fa-solid fa-heart-pulse text-emerald-500"></i>
+                                <span>Personalized Prevention Action Plan</span>
+                            </h4>
+                            <ul id="preventionPlanList" class="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                                <!-- Injected dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Screening Guidance & Disclaimer -->
+                    <div id="screeningAdviceBox" class="p-5 rounded-2xl bg-brand-50/60 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60 space-y-2">
+                        <h4 class="font-bold text-sm text-brand-800 dark:text-teal-300 flex items-center space-x-2">
+                            <i class="fa-solid fa-user-doctor"></i>
+                            <span>Recommended Screening & Consultation Guidance</span>
+                        </h4>
+                        <p id="screeningAdviceText" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            <!-- Injected dynamically -->
+                        </p>
+                    </div>
+
+                    <!-- Medical Disclaimer -->
+                    <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 text-xs flex items-start space-x-3">
+                        <i class="fa-solid fa-shield-halved text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="font-bold">Scientific & Ethical Disclaimer:</strong>
+                            OncoCare AI is an educational NCSC project prototype designed to demonstrate AI pattern recognition for risk awareness. It does not provide medical diagnosis. Please consult a qualified doctor for clinical evaluation.
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button onclick="resetCalculator()" class="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-semibold text-xs transition">
+                            <i class="fa-solid fa-rotate-left mr-1.5"></i> Recalculate Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PHYSICAL MODEL & FLOW DIAGRAM -->
+        <section id="physical-model" class="scroll-mt-28 space-y-6">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">Physical Component</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Smart Health Screening Kiosk Pathway</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm">
+                    Demonstrating the step-by-step physical kiosk architecture: how an individual progresses from initial interaction to medical consultation.
+                </p>
+            </div>
+
+            <!-- Flow Diagram Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-3">
+                <!-- Step 1 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        1
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 1</h4>
+                    <p class="font-bold text-sm">User Entry</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Kiosk touchscreen welcome & registration</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        2
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 2</h4>
+                    <p class="font-bold text-sm">Risk Survey</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Inputs habits, symptoms & family tree</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        3
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 3</h4>
+                    <p class="font-bold text-sm">AI Analysis</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Pattern engine evaluates risk profile</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        4
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 4</h4>
+                    <p class="font-bold text-sm">Prevention</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Prints tailor-made habit change tips</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        5
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 5</h4>
+                    <p class="font-bold text-sm">Screening</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Highlights relevant diagnostic options</p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2 relative group hover:border-brand-500 transition">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold text-base">
+                        6
+                    </div>
+                    <h4 class="font-bold text-xs uppercase text-slate-500">Step 6</h4>
+                    <p class="font-bold text-sm">Doctor Consultation</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Connects user with medical experts</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SCREENING & DIAGNOSTIC MODALITIES -->
+        <section id="modalities" class="scroll-mt-28 space-y-6">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">Medical Literacy</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Cancer Screening & Diagnostic Modalities</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm">
+                    Interactive breakdown of standard clinical tests. Click any card for detailed medical insights.
+                </p>
+            </div>
+
+            <!-- Modalities Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Category 1: Imaging -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 hover:shadow-xl transition">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl font-bold">
+                        🩻
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold">1. Imaging Modalities</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Visualizing structural abnormalities inside body tissues</p>
+                    </div>
+                    <div class="space-y-3 pt-2 text-xs">
+                        <div onclick="openModalityDetail('Mammography & Ultrasound', 'Mammography uses low-dose X-rays to detect breast tissue density changes and early calcifications, while Ultrasound uses sound waves to distinguish solid masses from fluid-filled cysts without radiation.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Mammography & Ultrasound</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Early detection of breast tissue density changes and soft tissue cysts.</p>
+                        </div>
+                        <div onclick="openModalityDetail('X-Ray & Low-Dose CT Scan', 'Low-Dose CT scans provide detailed cross-sectional 3D images of internal lungs and chest organs, detecting nodules far smaller than traditional chest X-rays.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>X-Ray & Low-Dose CT Scan</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Essential for lung, bone, and chest screening in high-risk individuals.</p>
+                        </div>
+                        <div onclick="openModalityDetail('MRI Scan (Magnetic Resonance Imaging)', 'MRI utilizes strong magnetic fields and radio waves to generate non-invasive high-resolution soft tissue contrast, ideal for brain, spinal, and abdominal evaluations.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>MRI Scan</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">High-resolution soft tissue contrast for neurological and abdominal areas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Lab & Pathology -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 hover:shadow-xl transition">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl font-bold">
+                        🔬
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold">2. Lab & Pathology</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Cellular microscopic examination and bio-fluid analysis</p>
+                    </div>
+                    <div class="space-y-3 pt-2 text-xs">
+                        <div onclick="openModalityDetail('Cytology (Pap Smear)', 'Cytology involves microscopic scraping and fluid checks to identify dysplastic or pre-cancerous cellular alterations early, widely used in cervical cancer prevention.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Cytology (Pap Smear)</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Microscopic cell scraping analysis for early cervical cancer detection.</p>
+                        </div>
+                        <div onclick="openModalityDetail('Biopsy & Histopathology', 'Biopsy is considered the definitive clinical gold standard. Pathologists analyze stained tissue sections to confirm cell malignancy, grade, and structure.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Biopsy & Histopathology</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">The gold standard test. Examination of tissue samples under a microscope.</p>
+                        </div>
+                        <div onclick="openModalityDetail('Blood Profiles & Complete Metrics', 'Standard blood panels evaluate organ function, liver/kidney biomarkers, blood cell counts, and metabolic health indicator baselines.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Blood Profile Tests</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">CBC and liver/kidney function screens to monitor overall biological health.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: Advanced Molecular -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 hover:shadow-xl transition">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        🧬
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold">3. Advanced Molecular Testing</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Genomic mutations and specific protein biomarkers</p>
+                    </div>
+                    <div class="space-y-3 pt-2 text-xs">
+                        <div onclick="openModalityDetail('Biomarker Testing (PSA, CA-125)', 'Biomarker assays measure specific protein substances released into blood serum by tumor cells, supporting clinical tracking and treatment monitoring.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Biomarker Tests (PSA, CA-125)</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Specific proteins produced by tumor cells detectable in blood serum.</p>
+                        </div>
+                        <div onclick="openModalityDetail('Genetic Sequencing (BRCA1/2)', 'DNA sequencing flags inherited mutations (like BRCA1 or BRCA2) that significantly elevate an individual’s lifetime hereditary risk profile.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Genetic Sequencing (BRCA1/2)</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Identifies inherited gene mutations that elevate lifetime risk profiles.</p>
+                        </div>
+                        <div onclick="openModalityDetail('Liquid Biopsy', 'An cutting-edge non-invasive test detecting microscopic circulating tumor DNA (ctDNA) fragments floating inside blood plasma.')" class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-1 cursor-pointer hover:bg-brand-50 dark:hover:bg-slate-700/60 transition">
+                            <strong class="font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                                <span>Liquid Biopsy</span>
+                                <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            </strong>
+                            <p class="text-slate-600 dark:text-slate-400">Emerging technique catching circulating tumor DNA (ctDNA) fragments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: COMMUNITY SURVEY DASHBOARD -->
+        <section id="survey" class="scroll-mt-28 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="space-y-2">
+                    <span class="px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">Social Science Component</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Community Survey Insights</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm max-w-2xl">
+                        Survey metrics highlighting public awareness gaps and user openness towards AI-assisted prevention tools.
+                    </p>
+                </div>
+                <button onclick="openSurveyModal()" class="px-5 py-3 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs hover:bg-slate-800 dark:hover:bg-white transition flex items-center space-x-2 self-start md:self-auto">
+                    <i class="fa-solid fa-vote-yea"></i>
+                    <span>Take Community Survey</span>
+                </button>
+            </div>
+
+            <!-- Survey Metrics Chart Grid -->
+            <div id="surveyChartsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Dynamic Bars rendered by JavaScript -->
+            </div>
+        </section>
+
+        <!-- SECTION 6: INNOVATION, SOCIAL IMPACT & FUTURE SCOPE -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Innovation & Highlights -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 space-y-6">
+                <div class="space-y-1">
+                    <span class="text-xs font-bold text-brand-600 dark:text-teal-400 uppercase tracking-wider">Project Highlights</span>
+                    <h3 class="text-xl font-extrabold">What Makes OncoCare AI Innovative?</h3>
+                </div>
+
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold shrink-0">1</div>
+                        <div>
+                            <strong class="font-bold block">AI + Prevention Paradigm</strong>
+                            <span class="text-slate-600 dark:text-slate-400 text-xs">Shifts healthcare focus from late-stage diagnosis to proactive risk identification and lifestyle modification.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold shrink-0">2</div>
+                        <div>
+                            <strong class="font-bold block">Digital App + Physical Kiosk Integration</strong>
+                            <span class="text-slate-600 dark:text-slate-400 text-xs">Combines mobile software accessibility with a tangible community health station model.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold shrink-0">3</div>
+                        <div>
+                            <strong class="font-bold block">Multi-Factor Pattern Evaluation</strong>
+                            <span class="text-slate-600 dark:text-slate-400 text-xs">Evaluates how factors like tobacco and genetic history compound together rather than in isolation.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-teal-300 flex items-center justify-center font-bold shrink-0">4</div>
+                        <div>
+                            <strong class="font-bold block">Scalable Social Impact</strong>
+                            <span class="text-slate-600 dark:text-slate-400 text-xs">Designed for deployment in schools, primary healthcare centers, civic camps, and rural clinics.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Scope & Limitations -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 space-y-6">
+                <div class="space-y-1">
+                    <span class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Scientific Responsibility</span>
+                    <h3 class="text-xl font-extrabold">Limitations & Future Roadmap</h3>
+                </div>
+
+                <div class="space-y-4 text-xs sm:text-sm">
+                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 space-y-1">
+                        <strong class="font-bold text-amber-800 dark:text-amber-300 block">⚠️ Prototype Acknowledgment</strong>
+                        <p class="text-slate-600 dark:text-slate-400">
+                            Our prototype uses simplified risk scoring to demonstrate AI pattern recognition concepts. It is not trained on validated clinical health datasets and does not replace professional medical diagnostics.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <strong class="font-bold block text-slate-800 dark:text-slate-200">🔮 Future Engineering Roadmap:</strong>
+                        <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+                            <span>Multilingual voice-assisted interface for rural health accessibility</span>
+                            <span>Integration with electronic health records (EHR)</span>
+                            <span>AI models trained on clinical datasets under medical ethics supervision</span>
+                            <span>Telemedicine doctor referral APIs</span>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-semibold text-slate-700 dark:text-slate-300">OncoCare AI — NCSC Science Project</p>
+            <p>Developed by Guntas Kaur | Class VIII, Roll No. 12</p>
+            <p class="text-slate-400">“Assess Risk. Prevent Early. Act in Time.”</p>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: INTERACTIVE SURVEY VOTING MODAL -->
+    <div id="surveyModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="text-xl font-extrabold">NCSC Community Survey Interactive Poll</h3>
+                <button onclick="closeSurveyModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500">Answer these 8 questions to update community survey metrics in real-time!</p>
+
+            <form id="userSurveyForm" onsubmit="submitSurveyVote(event)" class="space-y-4 text-xs sm:text-sm">
+                <div id="surveyQuestionsContainer" class="space-y-4">
+                    <!-- Questions injected by JS -->
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closeSurveyModal()" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 font-semibold">Cancel</button>
+                    <button type="submit" class="px-6 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold">Submit Answers & Update Charts</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: MODALITY DETAIL INFO MODAL -->
+    <div id="modalityModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 id="modalityModalTitle" class="text-lg font-extrabold text-brand-600 dark:text-teal-400">Modality Details</h3>
+                <button onclick="closeModalityModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p id="modalityModalBody" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <!-- Injected dynamically -->
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeModalityModal()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- SURVEY DATA STATE ---
+        const surveyQuestions = [
+            { id: 1, text: "Awareness that lifestyle influences cancer risk?", yes: 78, no: 22 },
+            { id: 2, text: "Awareness of tobacco & smoking hazards?", yes: 92, no: 8 },
+            { id: 3, text: "Belief that regular physical activity is important?", yes: 85, no: 15 },
+            { id: 4, text: "Awareness of balanced diet benefits?", yes: 80, no: 20 },
+            { id: 5, text: "Awareness of medical screening modalities?", yes: 48, no: 52 },
+            { id: 6, text: "Willingness to use an AI health awareness tool?", yes: 88, no: 12 },
+            { id: 7, text: "Belief that AI can support health awareness?", yes: 84, no: 16 },
+            { id: 8, text: "Personalized prevention suggestions useful?", yes: 94, no: 6 }
+        ];
+
+        // --- THEME & MENU TOGGLE LOGIC ---
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- SURVEY DASHBOARD RENDERER ---
+        function renderSurveyCharts() {
+            const grid = document.getElementById('surveyChartsGrid');
+            grid.innerHTML = '';
+
+            surveyQuestions.forEach(q => {
+                const total = q.yes + q.no;
+                const yesPercent = Math.round((q.yes / total) * 100);
+
+                const card = document.createElement('div');
+                card.className = "p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 hover:border-brand-500 transition shadow-sm";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Q${q.id}</span>
+                        <span class="px-2 py-0.5 rounded-md bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-teal-300 font-extrabold text-xs">${yesPercent}% Yes</span>
+                    </div>
+                    <p class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-snug">${q.text}</p>
+                    <div class="space-y-1">
+                        <div class="h-2.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                            <div class="bg-gradient-to-r from-brand-500 to-teal-400 h-full transition-all duration-500" style="width: ${yesPercent}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Yes (${q.yes})</span>
+                            <span>No (${q.no})</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- CALCULATOR RISK ASSESSMENT ENGINE ---
+        function calculateRisk(e) {
+            e.preventDefault();
+
+            // Collect values
+            const age = parseInt(document.getElementById('qAge').value);
+            const tobacco = parseInt(document.getElementById('qTobacco').value);
+            const alcohol = parseInt(document.getElementById('qAlcohol').value);
+            const exercise = parseInt(document.getElementById('qExercise').value);
+            const diet = parseInt(document.getElementById('qDiet').value);
+            const sun = parseInt(document.getElementById('qSun').value);
+            const family = parseInt(document.getElementById('qFamily').value);
+            const symptoms = parseInt(document.getElementById('qSymptoms').value);
+
+            const totalScore = age + tobacco + alcohol + exercise + diet + sun + family + symptoms;
+
+            // Transition to processing screen
+            document.getElementById('appFormScreen').classList.add('hidden');
+            const processingScreen = document.getElementById('appProcessingScreen');
+            processingScreen.classList.remove('hidden');
+
+            const bar = document.getElementById('processingBar');
+            const stepText = document.getElementById('processingStepText');
+
+            let progress = 0;
+            const steps = [
+                "Scanning tobacco & alcohol habits...",
+                "Evaluating diet & physical activity metrics...",
+                "Checking genetic background & persistent symptoms...",
+                "Synthesizing personalized prevention roadmap..."
+            ];
+
+            const interval = setInterval(() => {
+                progress += 25;
+                bar.style.width = progress + '%';
+                stepText.innerText = steps[Math.min(Math.floor(progress / 25), 3)];
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        processingScreen.classList.add('hidden');
+                        showAppResults(totalScore, { age, tobacco, alcohol, exercise, diet, sun, family, symptoms });
+                    }, 400);
+                }
+            }, 300);
+        }
+
+        function showAppResults(score, inputs) {
+            const resultScreen = document.getElementById('appResultScreen');
+            resultScreen.classList.remove('hidden');
+
+            const badge = document.getElementById('riskBadge');
+            const factorsList = document.getElementById('riskFactorsList');
+            const planList = document.getElementById('preventionPlanList');
+            const adviceText = document.getElementById('screeningAdviceText');
+
+            factorsList.innerHTML = '';
+            planList.innerHTML = '';
+
+            let level = '';
+
+            if (score <= 4) {
+                level = '🟢 Lower Risk Category';
+                badge.className = 'px-4 py-2 rounded-2xl text-xs font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300';
+            } else if (score <= 10) {
+                level = '🟡 Moderate Risk Category';
+                badge.className = 'px-4 py-2 rounded-2xl text-xs font-extrabold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300';
+            } else {
+                level = '🔴 Higher Risk Profile';
+                badge.className = 'px-4 py-2 rounded-2xl text-xs font-extrabold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300';
+            }
+            badge.innerText = level;
+
+            // Factor analysis & dynamic tips
+            const factors = [];
+            const plans = [];
+
+            if (inputs.tobacco > 0) {
+                factors.push("Active or passive tobacco exposure identified.");
+                plans.push("Prioritize tobacco cessation & avoid secondhand smoke.");
+            }
+            if (inputs.exercise > 1) {
+                factors.push("Sedentary or low regular physical exercise.");
+                plans.push("Engage in 150+ minutes of moderate exercise weekly.");
+            }
+            if (inputs.diet > 0) {
+                factors.push("Low fiber or high processed food intake.");
+                plans.push("Increase fresh fruits, vegetables, and whole grains.");
+            }
+            if (inputs.family > 0) {
+                factors.push("Family history of oncology reported.");
+                plans.push("Inform your physician about familial genetic history.");
+            }
+            if (inputs.symptoms > 0) {
+                factors.push("Persistent or unexplained warning signs reported.");
+                plans.push("Schedule a professional clinical evaluation promptly.");
+            }
+
+            if (factors.length === 0) {
+                factors.push("Healthy lifestyle choices maintained with minimal reported risk factors.");
+                plans.push("Maintain healthy balanced routines & regular annual checkups.");
+            }
+
+            factors.forEach(f => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="text-amber-500 mr-2">•</span> ${f}`;
+                factorsList.appendChild(li);
+            });
+
+            plans.forEach(p => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="text-emerald-500 mr-2">✓</span> ${p}`;
+                planList.appendChild(li);
+            });
+
+            // Screening guidance text
+            if (score > 8 || inputs.symptoms > 2) {
+                adviceText.innerHTML = "<strong>Action Required:</strong> Due to reported risk factors or persistent symptoms, we advise consulting a medical expert. They may recommend diagnostic modalities such as blood profiles, mammograms, low-dose CT, or biopsies based on clinical findings.";
+            } else {
+                adviceText.innerHTML = "<strong>Routine Wellness Guidance:</strong> Continue routine wellness checkups and standard age-appropriate screening guidelines as recommended by public health authorities.";
+            }
+        }
+
+        function resetCalculator() {
+            document.getElementById('appResultScreen').classList.add('hidden');
+            document.getElementById('appFormScreen').classList.remove('hidden');
+            document.getElementById('processingBar').style.width = '0%';
+        }
+
+        // --- MODALITY DETAIL POPUP ---
+        function openModalityDetail(title, desc) {
+            document.getElementById('modalityModalTitle').innerText = title;
+            document.getElementById('modalityModalBody').innerText = desc;
+            document.getElementById('modalityModal').classList.remove('hidden');
+        }
+
+        function closeModalityModal() {
+            document.getElementById('modalityModal').classList.add('hidden');
+        }
+
+        // --- SURVEY MODAL CONTROLS ---
+        function openSurveyModal() {
+            const container = document.getElementById('surveyQuestionsContainer');
+            container.innerHTML = '';
+
+            surveyQuestions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = "p-3 rounded-xl bg-slate-50 dark:bg-slate-800 space-y-2";
+                div.innerHTML = `
+                    <p class="font-bold text-xs text-slate-800 dark:text-slate-200">Q${q.id}: ${q.text}</p>
+                    <div class="flex items-center space-x-4">
+                        <label class="inline-flex items-center space-x-1.5 cursor-pointer">
+                            <input type="radio" name="sq_${q.id}" value="yes" checked class="text-brand-600 focus:ring-brand-500">
+                            <span>Yes</span>
+                        </label>
+                        <label class="inline-flex items-center space-x-1.5 cursor-pointer">
+                            <input type="radio" name="sq_${q.id}" value="no" class="text-brand-600 focus:ring-brand-500">
+                            <span>No</span>
+                        </label>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('surveyModal').classList.remove('hidden');
+        }
+
+        function closeSurveyModal() {
+            document.getElementById('surveyModal').classList.add('hidden');
+        }
+
+        function submitSurveyVote(e) {
+            e.preventDefault();
+            surveyQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="sq_${q.id}"]:checked`).value;
+                if (selected === 'yes') q.yes += 1;
+                else q.no += 1;
+            });
+            renderSurveyCharts();
+            closeSurveyModal();
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderSurveyCharts();
+        };
+    </script>
+</body>
+</html>
